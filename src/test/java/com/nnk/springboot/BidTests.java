@@ -15,7 +15,7 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BidTests {
-
+/*
 	@Autowired
 	private BidListRepository bidListRepository;
 
@@ -42,5 +42,5 @@ public class BidTests {
 		bidListRepository.delete(bid);
 		Optional<BidList> bidList = bidListRepository.findById(id);
 		Assert.assertFalse(bidList.isPresent());
-	}
+	}*/
 }

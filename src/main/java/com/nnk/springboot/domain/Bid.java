@@ -1,15 +1,20 @@
 package com.nnk.springboot.domain;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "bidlist")
 public class Bid {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id") // Make sure the name attribute matches the actual column name in your database.
-  private Integer bidListId;
+  private Integer id;
 
   private String account;
 
@@ -62,5 +67,4 @@ public class Bid {
   private String sourceListId;
 
   private String side;
-
 }

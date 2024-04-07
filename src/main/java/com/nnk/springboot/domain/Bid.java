@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 public class Bid {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id") // Make sure the name attribute matches the actual column name in your database.
   private Integer bidListId;
 
   private String account;

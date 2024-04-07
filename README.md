@@ -25,3 +25,12 @@
 ## Security
 1. Create user service to load user from  database and place in package com.nnk.springboot.services
 2. Add configuration class and place in package com.nnk.springboot.config
+
+## Useful Commands
+
+### SQL
+```sh
+USE demo;
+DESCRIBE bidlist;
+SELECT * FROM bidlist;
+```

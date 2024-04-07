@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Bid;
 import com.nnk.springboot.services.BidListService;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,8 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.validation.Valid;
+import org.tinylog.Logger;
 
 
 @Controller
@@ -34,12 +34,19 @@ public class BidListController {
 
     @PostMapping("/bidList/validate")
     public String validate(@Valid Bid bid, BindingResult result, Model model) {
-        if (!result.hasErrors()) {
+        Logger.info("Validating bid: {}", bid);
 
+        if (!result.hasErrors()) {
+            Logger.info("No errors found, saving bid.");
             bidListService.save(bid);
             model.addAttribute("bidLists", bidListService.findAll());
             return "redirect:/bidList/list";
+        } else {
+            result.getAllErrors().forEach(error ->
+                Logger.warn("Validation error: {}", error.getDefaultMessage())
+            );
         }
+
         return "bidList/add";
     }
 

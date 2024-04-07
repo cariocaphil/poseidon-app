@@ -2,12 +2,15 @@ package com.nnk.springboot.services;
 
 import com.nnk.springboot.domain.Bid;
 import com.nnk.springboot.repositories.BidListRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import org.tinylog.Logger;
 
+@Transactional
 @Service
 public class BidListService {
 
@@ -27,6 +30,7 @@ public class BidListService {
   }
 
   public Bid save(Bid bidList) {
+    Logger.info("Saving bid to the database: {}", bidList);
     return bidListRepository.save(bidList);
   }
 

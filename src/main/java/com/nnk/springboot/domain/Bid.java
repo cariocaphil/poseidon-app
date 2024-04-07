@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "bidlist")
-public class BidList {
+public class Bid {
     // TODO: Map columns in data table BIDLIST with corresponding java fields
 
   @Id

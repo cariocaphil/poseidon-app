@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Bid;
 import com.nnk.springboot.services.BidListService;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +14,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.tinylog.Logger;
 
 
-@RestController
+@Controller
 public class BidListController {
 
     @Autowired
@@ -26,7 +26,8 @@ public class BidListController {
     @RequestMapping("/bidList/list")
     public String home(Model model)
     {
-        // TODO: call service find all bids to show to the view
+        List<Bid> bids = bidListService.findAll();
+        model.addAttribute("bidLists", bids);
         return "bidList/list";
     }
 

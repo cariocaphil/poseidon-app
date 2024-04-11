@@ -4,6 +4,7 @@ import com.nnk.springboot.domain.Bid;
 import com.nnk.springboot.services.BidListService;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,10 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.tinylog.Logger;
 
 
-@Controller
+@RestController
 public class BidListController {
 
     @Autowired
@@ -26,6 +28,13 @@ public class BidListController {
     {
         // TODO: call service find all bids to show to the view
         return "bidList/list";
+    }
+
+    @GetMapping("/bidList/{id}")
+    public ResponseEntity<Bid> getBidById(@PathVariable("id") Integer id) {
+        return bidListService.findById(id)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/bidList/add")

@@ -46,7 +46,7 @@ public class BidListController {
     }
 
     @PostMapping("/bidList/validate")
-    public String validate(@Valid @RequestBody Bid bid, BindingResult result, Model model) {
+    public String validate(@Valid Bid bid, BindingResult result, Model model) {
         Logger.info("Validating bid: {}", bid);
 
         if (!result.hasErrors()) {

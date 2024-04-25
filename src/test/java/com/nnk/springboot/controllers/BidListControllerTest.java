@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -98,6 +99,62 @@ public class BidListControllerTest {
         .andExpect(model().attributeExists("bidLists"))
         .andExpect(model().attribute("bidLists", hasSize(1)))
         .andExpect(view().name("bidList/list"));
+  }
+
+  @Test
+  public void testUpdateBid_Success() throws Exception {
+    // Given
+    when(bidListService.findById(1)).thenReturn(Optional.of(bid));
+    when(bidListService.update(any(Bid.class))).thenReturn(bid);
+
+    // When & Then
+    mockMvc.perform(MockMvcRequestBuilders.post("/bidList/update/{id}", 1)
+            .param("account", "Updated Account")
+            .param("type", "Updated Type")
+            .param("bidQuantity", "20.0")
+            .sessionAttr("bidList", bid))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(redirectedUrl("/bidList/list"));
+
+    verify(bidListService, times(1)).update(any(Bid.class));
+  }
+
+  @Test
+  public void testUpdateBid_NotFound() throws Exception {
+    // Given
+    when(bidListService.findById(anyInt())).thenReturn(Optional.empty());
+
+    // When & Then
+    mockMvc.perform(MockMvcRequestBuilders.post("/bidList/update/{id}", 1)
+            .param("account", "Updated Account")
+            .param("type", "Updated Type")
+            .param("bidQuantity", "20.0")
+            .sessionAttr("bidList", bid))
+        .andExpect(status().isOk())
+        .andExpect(view().name("bidList/update"))
+        .andExpect(model().attributeExists("errorMessage"));
+
+    verify(bidListService, never()).update(any(Bid.class));
+  }
+
+  @Test
+  public void testUpdateBid_ValidationFailure() throws Exception {
+    // Given
+    // Force a validation error
+    lenient().when(bidListService.findById(1)).thenReturn(Optional.of(bid));
+    bindingResult.rejectValue("account", "error.account", "Account cannot be empty");
+
+    // When & Then
+    mockMvc.perform(MockMvcRequestBuilders.post("/bidList/update/{id}", 1)
+            .param("account", "")
+            .param("type", "Updated Type")
+            .param("bidQuantity", "20.0")
+            .sessionAttr("bidList", bid))
+        .andExpect(status().isOk())
+        .andExpect(view().name("bidList/update"))
+        .andExpect(model().attributeHasFieldErrors("bidList", "account"));
+
+    verify(bidListService, never()).update(any(Bid.class));
   }
 
 }

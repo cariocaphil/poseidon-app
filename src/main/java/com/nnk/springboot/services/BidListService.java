@@ -3,6 +3,7 @@ package com.nnk.springboot.services;
 import com.nnk.springboot.domain.Bid;
 import com.nnk.springboot.repositories.BidListRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,13 @@ public class BidListService {
     return savedBid;
   }
 
-  public Bid update(Bid bidList) {
-    // It assumes that the BidList exists. You may want to add a check and handle it accordingly.
-    return bidListRepository.save(bidList);
+  @Transactional
+  public Bid update(Bid bid) {
+    if (bid != null && bid.getId() != null && bidListRepository.existsById(bid.getId())) {
+      return bidListRepository.save(bid);
+    } else {
+      throw new EntityNotFoundException("Bid with id " + bid.getId() + " not found.");
+    }
   }
 
   public void delete(Integer id) {

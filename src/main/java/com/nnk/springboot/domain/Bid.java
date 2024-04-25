@@ -1,5 +1,7 @@
 package com.nnk.springboot.domain;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,10 +18,13 @@ public class Bid {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  @NotBlank(message = "Account is mandatory")
   private String account;
 
+  @NotBlank(message = "Type is mandatory")
   private String type;
 
+  @NotNull(message = "Bid quantity is mandatory")
   @Column(name = "bid_quantity")
   private Double bidQuantity;
 

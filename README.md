@@ -33,4 +33,6 @@
 USE demo;
 DESCRIBE bidlist;
 SELECT * FROM bidlist;
+SELECT * FROM curvepoint;
+SHOW TABLES;
 ```

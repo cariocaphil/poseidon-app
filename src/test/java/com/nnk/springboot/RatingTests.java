@@ -1,4 +1,3 @@
-/*
 package com.nnk.springboot;
 
 import com.nnk.springboot.domain.Rating;
@@ -22,27 +21,31 @@ public class RatingTests {
 
 	@Test
 	public void ratingTest() {
-		Rating rating = new Rating("Moodys Rating", "Sand PRating", "Fitch Rating", 10);
+		// Creating a new Rating with all required fields set to avoid validation errors
+		Rating rating = new Rating();
+		rating.setMoodysRating("AAA");
+		rating.setSandPRating("AAA");
+		rating.setFitchRating("AAA");
+		rating.setOrderNumber(10);
 
 		// Save
 		rating = ratingRepository.save(rating);
 		Assert.assertNotNull(rating.getId());
-		Assert.assertTrue(rating.getOrderNumber() == 10);
+		Assert.assertEquals(Integer.valueOf(10), rating.getOrderNumber());
 
 		// Update
 		rating.setOrderNumber(20);
 		rating = ratingRepository.save(rating);
-		Assert.assertTrue(rating.getOrderNumber() == 20);
+		Assert.assertEquals(Integer.valueOf(20), rating.getOrderNumber());
 
 		// Find
 		List<Rating> listResult = ratingRepository.findAll();
 		Assert.assertTrue(listResult.size() > 0);
 
 		// Delete
-		Integer id = rating.getId();
+		Long id = rating.getId();
 		ratingRepository.delete(rating);
-		Optional<Rating> ratingList = ratingRepository.findById(id);
+		Optional<Rating> ratingList = ratingRepository.findById(Math.toIntExact(id));
 		Assert.assertFalse(ratingList.isPresent());
 	}
 }
-*/

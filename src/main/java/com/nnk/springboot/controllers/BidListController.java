@@ -3,6 +3,7 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.Bid;
 import com.nnk.springboot.services.BidListService;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -66,15 +67,36 @@ public class BidListController {
 
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get Bid by Id and to model then show to the form
-        return "bidList/update";
+        Optional<Bid> bidOptional = bidListService.findById(id);
+        if (bidOptional.isPresent()) {
+            model.addAttribute("bidList", bidOptional.get());
+            return "bidList/update";
+        } else {
+            model.addAttribute("errorMessage", "Bid not found");
+            return "redirect:/bidList/list";
+        }
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid Bid bidList,
-                             BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Bid and return list Bid
-        return "redirect:/bidList/list";
+    public String updateBid(@PathVariable("id") Integer id, @Valid @ModelAttribute("bidList") Bid bidList,
+        BindingResult result, Model model) {
+        if (!result.hasErrors()) {
+            Optional<Bid> existingBid = bidListService.findById(id);
+            if (existingBid.isPresent()) {
+                // Update the bid
+                bidList.setId(id);
+                bidListService.update(bidList);
+                model.addAttribute("bidLists", bidListService.findAll());
+                return "redirect:/bidList/list";
+            } else {
+                model.addAttribute("errorMessage", "Bid not found");
+                return "bidList/update";
+            }
+        } else {
+            model.addAttribute("bidList", bidList);
+            model.addAttribute("errorMessage", "Validation error");
+            return "bidList/update";
+        }
     }
 
     @GetMapping("/bidList/delete/{id}")

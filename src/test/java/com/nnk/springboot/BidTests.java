@@ -3,6 +3,7 @@ package com.nnk.springboot;
 import com.nnk.springboot.domain.Bid;
 import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.services.BidListService;
+import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -57,5 +58,36 @@ public class BidTests {
     Integer invalidId = -1;
     Optional<Bid> foundBid = bidListService.findById(invalidId);
     Assertions.assertFalse(foundBid.isPresent());
+  }
+
+  @Test
+  public void updateExistingBidTest() {
+    // Setup - create and save a bid first
+    Bid originalBid = new Bid();
+    originalBid.setAccount("Original Account");
+    originalBid.setType("Original Type");
+    originalBid.setBidQuantity(20.0);
+    originalBid = bidListRepository.save(originalBid);
+    Integer id = originalBid.getId();
+
+    // Change some data
+    originalBid.setAccount("Updated Account");
+
+    // Update
+    Bid updatedBid = bidListService.update(originalBid);
+
+    // Validate
+    Assertions.assertEquals("Updated Account", updatedBid.getAccount());
+  }
+
+  @Test
+  public void updateNonExistentBidTest() {
+    // Setup - create a bid but do not save it
+    Bid bid = new Bid();
+    bid.setId(999);
+    bid.setAccount("Nonexistent Account");
+
+    // Attempt to update
+    Assertions.assertThrows(EntityNotFoundException.class, () -> bidListService.update(bid));
   }
 }

@@ -66,10 +66,18 @@ public class CurveController {
 
     @PostMapping("/curvePoint/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid CurvePoint curvePoint,
-                             BindingResult result, Model model) {
-        // TODO: check required fields, if valid call service to update Curve and return Curve list
+        BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("curvePoint", curvePoint);
+            return "curvePoint/update";
+        }
+
+        curvePoint.setId(id);
+        curvePointService.update(curvePoint);
+
         return "redirect:/curvePoint/list";
     }
+
 
     @GetMapping("/curvePoint/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {

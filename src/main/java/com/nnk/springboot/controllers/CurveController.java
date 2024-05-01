@@ -3,6 +3,7 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.services.CurvePointService;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,8 +53,15 @@ public class CurveController {
 
     @GetMapping("/curvePoint/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        // TODO: get CurvePoint by Id and to model then show to the form
-        return "curvePoint/update";
+        Optional<CurvePoint> curvePointOptional = curvePointService.findById(id);
+
+        if (curvePointOptional.isPresent()) {
+            model.addAttribute("curvePoint", curvePointOptional.get());
+            return "curvePoint/update";
+        } else {
+            model.addAttribute("errorMessage", "CurvePoint not found");
+            return "redirect:/curvePoint/list";
+        }
     }
 
     @PostMapping("/curvePoint/update/{id}")

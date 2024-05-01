@@ -1,23 +1,17 @@
 package com.nnk.springboot.domain;
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
+import lombok.NoArgsConstructor;
 
-
+@NoArgsConstructor // This should ensure a no-argument constructor is available
 @Entity
 @Table(name = "curvepoint")
 public class CurvePoint {
-    // TODO: Map columns in data table CURVEPOINT with corresponding java fields
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
   @NotNull
   @Column(name = "curve_id")
@@ -38,6 +32,13 @@ public class CurvePoint {
   @Column(name = "creation_date")
   private Timestamp creationDate;
 
+  public CurvePoint(Integer curveId, Double term, Double value) {
+    this.curveId = curveId;
+    this.term = term;
+    this.value = value;
+    this.asOfDate = new Timestamp(System.currentTimeMillis()); // Assuming current time for the sake of example
+    this.creationDate = new Timestamp(System.currentTimeMillis());
+  }
   // standard getters and setters
 
   public Integer getId() {

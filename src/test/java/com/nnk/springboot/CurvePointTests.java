@@ -1,4 +1,4 @@
-/*
+
 package com.nnk.springboot;
 
 import com.nnk.springboot.domain.CurvePoint;
@@ -29,7 +29,7 @@ public class CurvePointTests {
 		Assert.assertNotNull(curvePoint.getId());
 		Assert.assertTrue(curvePoint.getCurveId() == 10);
 
-		// Update
+/*		// Update
 		curvePoint.setCurveId(20);
 		curvePoint = curvePointRepository.save(curvePoint);
 		Assert.assertTrue(curvePoint.getCurveId() == 20);
@@ -42,8 +42,8 @@ public class CurvePointTests {
 		Integer id = curvePoint.getId();
 		curvePointRepository.delete(curvePoint);
 		Optional<CurvePoint> curvePointList = curvePointRepository.findById(id);
-		Assert.assertFalse(curvePointList.isPresent());
+		Assert.assertFalse(curvePointList.isPresent());*/
 	}
 
 }
-*/
+

@@ -1,6 +1,9 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.CurvePoint;
+import com.nnk.springboot.services.CurvePointService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,12 +16,17 @@ import javax.validation.Valid;
 
 @Controller
 public class CurveController {
-    // TODO: Inject Curve Point service
+    private CurvePointService curvePointService;
+
+    @Autowired
+    public void CurvePointController(CurvePointService curvePointService) {
+        this.curvePointService = curvePointService;
+    }
 
     @RequestMapping("/curvePoint/list")
-    public String home(Model model)
-    {
-        // TODO: find all Curve Point, add to model
+    public String home(Model model) {
+        List<CurvePoint> curvePoints = curvePointService.findAll();
+        model.addAttribute("curvePoints", curvePoints);
         return "curvePoint/list";
     }
 
@@ -29,9 +37,18 @@ public class CurveController {
 
     @PostMapping("/curvePoint/validate")
     public String validate(@Valid CurvePoint curvePoint, BindingResult result, Model model) {
-        // TODO: check data valid and save to db, after saving return Curve list
-        return "curvePoint/add";
+        if (!result.hasErrors()) {
+            // No validation errors, proceed with saving the curvePoint to the database
+            curvePointService.save(curvePoint);
+            model.addAttribute("curvePoints", curvePointService.findAll());
+            return "redirect:/curvePoint/list";  // Redirect to the listing page after successful save
+        } else {
+            // Validation errors are present
+            model.addAttribute("curvePoint", curvePoint);  // Add curvePoint object to model to retain form input
+            return "curvePoint/add";  // Return to the form page to display validation errors
+        }
     }
+
 
     @GetMapping("/curvePoint/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {

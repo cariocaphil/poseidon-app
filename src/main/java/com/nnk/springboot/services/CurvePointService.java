@@ -39,4 +39,12 @@ public class CurvePointService {
     curvePointRepository.deleteById(id);
   }
 
+  @Transactional
+  public CurvePoint update(CurvePoint curvePoint) {
+    if (curvePoint.getId() == null) {
+      throw new IllegalArgumentException("CurvePoint must have an ID to be updated");
+    }
+    return curvePointRepository.save(curvePoint);
+  }
+
 }

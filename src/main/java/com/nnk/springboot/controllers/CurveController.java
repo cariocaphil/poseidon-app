@@ -80,8 +80,14 @@ public class CurveController {
 
 
     @GetMapping("/curvePoint/delete/{id}")
-    public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Curve by Id and delete the Curve, return to Curve list
+    public String deleteCurvePoint(@PathVariable("id") Integer id, Model model) {
+        Optional<CurvePoint> curvePoint = curvePointService.findById(id);
+        if (curvePoint.isPresent()) {
+            curvePointService.delete(id);
+            model.addAttribute("message", "CurvePoint successfully deleted.");
+        } else {
+            model.addAttribute("errorMessage", "CurvePoint not found for ID " + id);
+        }
         return "redirect:/curvePoint/list";
     }
 }

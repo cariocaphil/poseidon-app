@@ -15,17 +15,30 @@ import java.util.Optional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TradeTests {
-/*
+
 	@Autowired
 	private TradeRepository tradeRepository;
 
 	@Test
 	public void tradeTest() {
-		Trade trade = new Trade("Trade Account", "Type");
+		Trade trade = new Trade();
+		trade.setAccount("Trade Account");
+		trade.setType("Type");
+		trade.setBuyQuantity(1000.0);
+		trade.setSellQuantity(500.0);
+		trade.setBuyPrice(1.5);
+		trade.setSellPrice(1.6);
+		trade.setSecurity("Security");
+		trade.setStatus("Active");
+		trade.setTrader("Trader Joe");
+		trade.setBenchmark("Benchmark");
 
+		trade.setDealType("Type");
+		trade.setSourceListId("Source");
+		trade.setSide("Side");
 		// Save
 		trade = tradeRepository.save(trade);
-		Assert.assertNotNull(trade.getTradeId());
+		Assert.assertNotNull(trade.getId());
 		Assert.assertTrue(trade.getAccount().equals("Trade Account"));
 
 		// Update
@@ -38,9 +51,9 @@ public class TradeTests {
 		Assert.assertTrue(listResult.size() > 0);
 
 		// Delete
-		Integer id = trade.getTradeId();
+		Integer id = trade.getId();
 		tradeRepository.delete(trade);
 		Optional<Trade> tradeList = tradeRepository.findById(id);
 		Assert.assertFalse(tradeList.isPresent());
-	}*/
+	}
 }

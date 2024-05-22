@@ -23,7 +23,7 @@ public class SecurityConfig {
     http
         .csrf().disable()
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers("/login", "/register").permitAll() // Allow access to registration, login
+            .requestMatchers("/login", "/user/list", "user/validate").permitAll() // Allow access to registration, login
             .anyRequest().authenticated()) // All other requests require authentication
         .formLogin(formLogin -> formLogin
             .defaultSuccessUrl("/", true) // Redirect to the user list upon successful login

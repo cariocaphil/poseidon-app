@@ -26,7 +26,7 @@ public class SecurityConfig {
             .requestMatchers("/login", "/register").permitAll() // Allow access to registration, login
             .anyRequest().authenticated()) // All other requests require authentication
         .formLogin(formLogin -> formLogin
-            .defaultSuccessUrl("/user/list", true) // Redirect to the user list upon successful login
+            .defaultSuccessUrl("/", true) // Redirect to the user list upon successful login
             .permitAll()) // Allow all to access login page
         .logout(logout -> logout
             .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // Use GET method for logout if CSRF is disabled

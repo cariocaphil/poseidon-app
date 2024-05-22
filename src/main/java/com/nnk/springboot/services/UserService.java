@@ -1,6 +1,7 @@
 package com.nnk.springboot.services;
 
 import com.nnk.springboot.domain.User;
+import com.nnk.springboot.exceptions.UserRegistrationException;
 import com.nnk.springboot.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,11 +34,11 @@ public class UserService implements UserDetailsService {
 
   public void registerUser(com.nnk.springboot.domain.UserRegistrationRequest request) {
     if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-      // throw new UserRegistrationException("User with userName " + request.getUsername() + " already exists");
+       throw new UserRegistrationException("User with userName " + request.getUsername() + " already exists");
     }
 
     User newUser = new User();
-    newUser.setUserName(request.getUsername());;
+    newUser.setUserName(request.getUsername());
     newUser.setPassword(passwordEncoder.encode(request.getPassword()));
     userRepository.save(newUser);
   }

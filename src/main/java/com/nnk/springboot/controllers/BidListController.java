@@ -2,11 +2,14 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Bid;
 import com.nnk.springboot.services.BidListService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,6 +33,9 @@ public class BidListController {
     {
         List<Bid> bids = bidListService.findAll();
         model.addAttribute("bidLists", bids);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth != null ? auth.getName() : "Anonymous";
+        model.addAttribute("username", username);
         return "bidList/list";
     }
 

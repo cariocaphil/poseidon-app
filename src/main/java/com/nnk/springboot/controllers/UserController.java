@@ -1,8 +1,11 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
+import com.nnk.springboot.exceptions.UserRegistrationException;
 import com.nnk.springboot.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +26,9 @@ public class UserController {
     public String home(Model model)
     {
         model.addAttribute("users", userRepository.findAll());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth != null ? auth.getName() : "Anonymous";
+        model.addAttribute("username", username);
         return "user/list";
     }
 
@@ -34,6 +40,9 @@ public class UserController {
     @PostMapping("/user/validate")
     public String validate(@Valid User user, BindingResult result, Model model) {
         if (!result.hasErrors()) {
+            if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+                throw new UserRegistrationException("User with userName " + user.getUsername() + " already exists");
+            }
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(user.getPassword()));
             userRepository.save(user);

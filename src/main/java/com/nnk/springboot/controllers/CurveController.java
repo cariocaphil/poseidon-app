@@ -5,6 +5,8 @@ import com.nnk.springboot.services.CurvePointService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,6 +30,9 @@ public class CurveController {
     public String home(Model model) {
         List<CurvePoint> curvePoints = curvePointService.findAll();
         model.addAttribute("curvePoints", curvePoints);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth != null ? auth.getName() : "Anonymous";
+        model.addAttribute("username", username);
         return "curvePoint/list";
     }
 

@@ -3,6 +3,8 @@ package com.nnk.springboot.controllers;
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.services.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +21,9 @@ public class TradeController {
     @RequestMapping("/trade/list")
     public String home(Model model) {
         model.addAttribute("trades", tradeService.findAll());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth != null ? auth.getName() : "Anonymous";
+        model.addAttribute("username", username);
         return "trade/list";
     }
 

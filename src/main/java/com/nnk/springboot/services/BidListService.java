@@ -23,34 +23,54 @@ public class BidListService {
   @Autowired
   public BidListService(BidListRepository bidListRepository) {
     this.bidListRepository = bidListRepository;
+    Logger.info("BidListService initialized with BidListRepository.");
   }
 
   public List<Bid> findAll() {
-    return bidListRepository.findAll();
+    List<Bid> allBids = bidListRepository.findAll();
+    Logger.info("Retrieved all bids from the database, count: {}", allBids.size());
+    return allBids;
   }
 
   public Optional<Bid> findById(Integer id) {
-    return bidListRepository.findById(id);
+    Optional<Bid> bid = bidListRepository.findById(id);
+    if (bid.isPresent()) {
+      Logger.info("Found bid with ID: {}", id);
+    } else {
+      Logger.warn("No bid found with ID: {}", id);
+    }
+    return bid;
   }
+
   @Transactional
-  public Bid save(Bid bidList) {
-    Logger.info("Saving bid to the database: {}", bidList);
-    Bid savedBid = bidListRepository.save(bidList);
+  public Bid save(Bid bid) {
+    Logger.info("Saving new bid with details: {}", bid);
+    Bid savedBid = bidListRepository.save(bid);
     entityManager.flush();
     entityManager.clear();
+    Logger.info("Saved bid successfully with ID: {}", savedBid.getId());
     return savedBid;
   }
 
   @Transactional
   public Bid update(Bid bid) {
     if (bid != null && bid.getId() != null && bidListRepository.existsById(bid.getId())) {
+      Logger.info("Updating bid with ID: {}", bid.getId());
       return bidListRepository.save(bid);
     } else {
+      if (bid != null) {
+        Logger.error("Bid update failed, bid with ID {} not found.", bid.getId());
+      }
       throw new EntityNotFoundException("Bid with id " + bid.getId() + " not found.");
     }
   }
 
   public void delete(Integer id) {
-    bidListRepository.deleteById(id);
+    if (bidListRepository.existsById(id)) {
+      bidListRepository.deleteById(id);
+      Logger.info("Deleted bid with ID: {}", id);
+    } else {
+      Logger.warn("Attempted to delete non-existing bid with ID: {}", id);
+    }
   }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.tinylog.Logger;
 
 import java.util.Collections;
 
@@ -25,22 +26,30 @@ public class UserService implements UserDetailsService {
   @Override
   @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    Logger.info("Attempting to load user by username: {}", username);
     User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        .orElseThrow(() -> {
+          Logger.error("User not found with username: {}", username);
+          return new UsernameNotFoundException("User not found with username: " + username);
+        });
 
+    Logger.info("User found with username: {}", username);
     return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
         Collections.emptyList());
   }
 
   public void registerUser(com.nnk.springboot.domain.UserRegistrationRequest request) {
+    Logger.info("Registering new user with username: {}", request.getUsername());
     if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-       throw new UserRegistrationException("User with userName " + request.getUsername() + " already exists");
+      Logger.error("Registration failed: Username {} already exists", request.getUsername());
+      throw new UserRegistrationException("User with userName " + request.getUsername() + " already exists");
     }
 
     User newUser = new User();
-    newUser.setUserName(request.getUsername());
+    newUser.setUsername(request.getUsername());
     newUser.setPassword(passwordEncoder.encode(request.getPassword()));
     userRepository.save(newUser);
+    Logger.info("New user registered successfully with username: {}", request.getUsername());
   }
 
 }

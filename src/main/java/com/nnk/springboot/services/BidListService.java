@@ -54,15 +54,24 @@ public class BidListService {
 
   @Transactional
   public Bid update(Bid bid) {
-    if (bid != null && bid.getId() != null && bidListRepository.existsById(bid.getId())) {
-      Logger.info("Updating bid with ID: {}", bid.getId());
-      return bidListRepository.save(bid);
-    } else {
-      if (bid != null) {
-        Logger.error("Bid update failed, bid with ID {} not found.", bid.getId());
-      }
-      throw new EntityNotFoundException("Bid with id " + bid.getId() + " not found.");
+    if (bid == null) {
+      Logger.error("Attempted to update a null bid object.");
+      throw new IllegalArgumentException("Cannot update a null bid.");
     }
+
+    Integer bidId = bid.getId();
+    if (bidId == null) {
+      Logger.error("Attempted to update a bid without an ID.");
+      throw new IllegalArgumentException("Cannot update a bid without an ID.");
+    }
+
+    if (!bidListRepository.existsById(bidId)) {
+      Logger.error("Bid update failed, bid with ID {} not found.", bidId);
+      throw new EntityNotFoundException("Bid with id " + bidId + " not found.");
+    }
+
+    Logger.info("Updating bid with ID: {}", bidId);
+    return bidListRepository.save(bid);
   }
 
   public void delete(Integer id) {

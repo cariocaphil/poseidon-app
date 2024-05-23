@@ -9,31 +9,50 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+/**
+ * Configures the security aspects of the application, setting up authentication
+ * and authorization mechanisms, and defining security behaviors like login,
+ * logout, session management, and CSRF protection.
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+  /**
+   * Provides a password encoder bean using BCrypt hashing algorithm.
+   * This encoder is used to secure passwords in the application.
+   *
+   * @return the password encoder
+   */
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
+  /**
+   * Configures the security filter chain that applies to HTTP requests.
+   * This method sets up form login, logout configurations, and session management.
+   *
+   * @param http the {@link HttpSecurity} to configure
+   * @return the configured {@link SecurityFilterChain}
+   * @throws Exception if an error occurs during configuration
+   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http
-        .csrf().disable()
+        .csrf().disable()  // Disabling CSRF protection for API simplicity (not recommended for production)
         .authorizeHttpRequests(authz -> authz
-            .requestMatchers("/login", "/user/list", "user/validate", "/css/**").permitAll() // Allow access to registration, login
-            .anyRequest().authenticated()) // All other requests require authentication
+            .requestMatchers("/login", "/user/list", "user/validate", "/css/**").permitAll() // Permit all for these paths
+            .anyRequest().authenticated()) // Require authentication for all other requests
         .formLogin(formLogin -> formLogin
-            .defaultSuccessUrl("/", true) // Redirect to the user list upon successful login
-            .permitAll()) // Allow all to access login page
+            .defaultSuccessUrl("/", true) // Redirect to the root upon successful login
+            .permitAll()) // Allow access to all users
         .logout(logout -> logout
-            .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // Use GET method for logout if CSRF is disabled
+            .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // Enable GET method for logout
             .logoutSuccessUrl("/login?logout") // Redirect to login page after logout
-            .permitAll()) // Allow all to access logout
+            .permitAll()) // Allow access to all users
         .sessionManagement(session -> session
-            .maximumSessions(1) // This ensures a user can only have one session active at a time
+            .maximumSessions(1) // Allow only one active session per user
             .expiredUrl("/login?expired")); // Redirect to login page if session expires
 
     return http.build();

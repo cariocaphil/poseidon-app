@@ -37,13 +37,13 @@ public class BidTests {
     Bid foundBid = bidListRepository.findById(bid.getId()).orElse(null);
     Assertions.assertNotNull(foundBid);
 
-/*
+
     // Delete
     bidListRepository.delete(bid);
 
     // Verify
     Optional<Bid> deletedBid = bidListRepository.findById(bid.getId());
-    Assertions.assertFalse(deletedBid.isPresent());*/
+    Assertions.assertFalse(deletedBid.isPresent());
   }
 
   @Test

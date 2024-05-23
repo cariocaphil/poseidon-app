@@ -106,14 +106,16 @@ public class BidListController {
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
+        Logger.info("Attempting to delete bid with ID: {}", id);
         Optional<Bid> existingBid = bidListService.findById(id);
         if (existingBid.isPresent()) {
             bidListService.delete(id);
             model.addAttribute("successMessage", "Bid with ID " + id + " was successfully deleted.");
+            Logger.info("Deleted bid with ID: {}", id);
         } else {
             model.addAttribute("errorMessage", "Bid not found with ID " + id);
+            Logger.error("Failed to delete bid: No bid found with ID {}", id);
         }
         return "redirect:/bidList/list";
     }
-
 }

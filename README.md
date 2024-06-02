@@ -28,6 +28,22 @@
 
 ## Useful Commands
 
+### Podman
+pull mysql image:
+```sh
+podman pull mysql
+```
+setting up mysql container:
+```sh
+podman run --name poseidon-mysql-container -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -d mysql
+```
+
+to start and run the container:
+```sh
+podman start poseidon-mysql-container
+podman exec -it poseidon-mysql-container mysql -uroot -p
+```
+
 ### SQL
 ```sh
 USE demo;

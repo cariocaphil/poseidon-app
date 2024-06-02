@@ -1,8 +1,8 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
-import com.nnk.springboot.exceptions.UserRegistrationException;
 import com.nnk.springboot.repositories.UserRepository;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
 import org.tinylog.Logger;
 
 @Controller
@@ -41,23 +41,29 @@ public class UserController {
     }
 
     @PostMapping("/user/validate")
-    public String validate(@Valid User user, BindingResult result, Model model) {
-        Logger.info("Validating new user: {}", user.getUsername());
+    public String validate(@ModelAttribute("user") @Valid User user, BindingResult result, Model model) {
+        Logger.info("Validating new user: {}", user);
         if (!result.hasErrors()) {
+            // Check if the username already exists
             if (userRepository.findByUsername(user.getUsername()).isPresent()) {
                 Logger.error("User registration failed: username {} already exists", user.getUsername());
-                throw new UserRegistrationException("User with userName " + user.getUsername() + " already exists");
+                return "user/add";
             }
+
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(user.getPassword()));
             userRepository.save(user);
-            Logger.info("User saved successfully: {}", user.getUsername());
-            model.addAttribute("users", userRepository.findAll());
+            Logger.info("User saved successfully, redirecting to list.");
+
             return "redirect:/user/list";
+        } else {
+            result.getAllErrors().forEach(error ->
+                Logger.warn("Validation error: {}", error.getDefaultMessage())
+            );
+            return "user/add";
         }
-        Logger.warn("Validation errors while adding user");
-        return "user/add";
     }
+
 
     @GetMapping("/user/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {

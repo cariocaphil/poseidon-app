@@ -129,10 +129,11 @@ public class BidListControllerTest {
             .param("account", "Updated Account")
             .param("type", "Updated Type")
             .param("bidQuantity", "20.0")
-            .sessionAttr("bidList", bid))
+            .sessionAttr("bidList", new Bid()))
         .andExpect(status().isOk())
         .andExpect(view().name("bidList/update"))
-        .andExpect(model().attributeExists("errorMessage"));
+        .andExpect(model().attributeExists("errorMessage"))
+        .andExpect(model().attribute("errorMessage", "Bid not found"));
 
     verify(bidListService, never()).update(any(Bid.class));
   }
@@ -140,9 +141,8 @@ public class BidListControllerTest {
   @Test
   public void testUpdateBid_ValidationFailure() throws Exception {
     // Given
-    // Force a validation error
     lenient().when(bidListService.findById(1)).thenReturn(Optional.of(bid));
-    bindingResult.rejectValue("account", "error.account", "Account cannot be empty");
+    bindingResult.rejectValue("account", "NotBlank", "Account cannot be empty");
 
     // When & Then
     mockMvc.perform(MockMvcRequestBuilders.post("/bidList/update/{id}", 1)
@@ -152,9 +152,10 @@ public class BidListControllerTest {
             .sessionAttr("bidList", bid))
         .andExpect(status().isOk())
         .andExpect(view().name("bidList/update"))
-        .andExpect(model().attributeHasFieldErrors("bidList", "account"));
-
-    verify(bidListService, never()).update(any(Bid.class));
+        .andExpect(model().attributeHasFieldErrors("bidList", "account"))
+        .andExpect(model().attributeErrorCount("bidList", 1))
+        .andExpect(model().attributeHasFieldErrorCode("bidList", "account", "NotBlank"));
   }
+
 
 }

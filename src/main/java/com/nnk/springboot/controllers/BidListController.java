@@ -84,29 +84,38 @@ public class BidListController {
     }
 
     @PostMapping("/bidList/update/{id}")
-    public String updateBid(@PathVariable("id") Integer id, @Valid @ModelAttribute("bidList") Bid bid,
-        BindingResult result, Model model) {
-        Logger.info("Updating bid with id {}", id);
-        if (!result.hasErrors()) {
-            Optional<Bid> existingBid = bidListService.findById(id);
-            if (existingBid.isPresent()) {
-                bidListService.update(bid);
-                Logger.info("Bid updated successfully.");
-                model.addAttribute("bidLists", bidListService.findAll());
-                return "redirect:/bidList/list";
-            } else {
-                Logger.error("Attempted to update non-existing bid with id {}", id);
-                return "bidList/update";
-            }
-        } else {
-            Logger.error("Validation errors occurred during updating bid with id {}", id);
-            return "bidList/update";
+    public String updateBid(@PathVariable("id") Integer id, @Valid @ModelAttribute("bidList") Bid bid, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            Logger.warn("Validation errors while attempting to update bid with ID {}: {}", id, result.getAllErrors());
+            model.addAttribute("bidList", bid);
+            return "bidList/update"; // Stay on the update page to display validation errors
         }
+
+        return bidListService.findById(id).map(existingBid -> {
+            Logger.info("Updating bid with ID: {}", id);
+            bid.setId(id); // Ensure the ID is passed correctly if it's not set in the form
+            bidListService.update(bid);
+            return "redirect:/bidList/list"; // Redirect to the list view on successful update
+        }).orElseGet(() -> {
+            Logger.error("Attempted to update non-existing bid with ID: {}", id);
+            model.addAttribute("errorMessage", "Bid not found");
+            return "bidList/update"; // Stay on the update page and show an error message
+        });
     }
+
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        // TODO: Find Bid by Id and delete the bid, return to Bid list
+        Logger.info("Attempting to delete bid with ID: {}", id);
+        Optional<Bid> existingBid = bidListService.findById(id);
+        if (existingBid.isPresent()) {
+            bidListService.delete(id);
+            model.addAttribute("successMessage", "Bid with ID " + id + " was successfully deleted.");
+            Logger.info("Deleted bid with ID: {}", id);
+        } else {
+            model.addAttribute("errorMessage", "Bid not found with ID " + id);
+            Logger.error("Failed to delete bid: No bid found with ID {}", id);
+        }
         return "redirect:/bidList/list";
     }
 }

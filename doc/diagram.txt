@@ -1,0 +1,92 @@
+@startuml
+entity "BidList" as BidList {
+  * BidListId : tinyint(4) <<PK>>
+  --
+  * account : varchar(30)
+  * type : varchar(30)
+  bidQuantity : double
+  askQuantity : double
+  bid : double
+  ask : double
+  benchmark : varchar(125)
+  bidListDate : timestamp
+  commentary : varchar(125)
+  security : varchar(125)
+  status : varchar(10)
+  trader : varchar(125)
+  book : varchar(125)
+  creationName : varchar(125)
+  creationDate : timestamp
+  revisionName : varchar(125)
+  revisionDate : timestamp
+  dealName : varchar(125)
+  dealType : varchar(125)
+  sourceListId : varchar(125)
+  side : varchar(125)
+}
+
+entity "Trade" as Trade {
+  * TradeId : tinyint(4) <<PK>>
+  --
+  * account : varchar(30)
+  * type : varchar(30)
+  buyQuantity : double
+  sellQuantity : double
+  buyPrice : double
+  sellPrice : double
+  tradeDate : timestamp
+  security : varchar(125)
+  status : varchar(10)
+  trader : varchar(125)
+  benchmark : varchar(125)
+  book : varchar(125)
+  creationName : varchar(125)
+  creationDate : timestamp
+  revisionName : varchar(125)
+  revisionDate : timestamp
+  dealName : varchar(125)
+  dealType : varchar(125)
+  sourceListId : varchar(125)
+  side : varchar(125)
+}
+
+entity "CurvePoint" as CurvePoint {
+  * Id : tinyint(4) <<PK>>
+  --
+  CurveId : tinyint
+  asOfDate : timestamp
+  term : double
+  value : double
+  creationDate : timestamp
+}
+
+entity "Rating" as Rating {
+  * Id : tinyint(4) <<PK>>
+  --
+  moodysRating : varchar(125)
+  sandPRating : varchar(125)
+  fitchRating : varchar(125)
+  orderNumber : tinyint
+}
+
+entity "RuleName" as RuleName {
+  * Id : tinyint(4) <<PK>>
+  --
+  name : varchar(125)
+  description : varchar(125)
+  json : varchar(125)
+  template : varchar(512)
+  sqlStr : varchar(125)
+  sqlPart : varchar(125)
+}
+
+entity "Users" as Users {
+  * Id : tinyint(4) <<PK>>
+  --
+  username : varchar(125)
+  password : varchar(125)
+  fullname : varchar(125)
+  role : varchar(125)
+}
+
+@enduml

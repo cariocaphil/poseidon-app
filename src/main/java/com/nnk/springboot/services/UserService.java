@@ -38,18 +38,4 @@ public class UserService implements UserDetailsService {
         Collections.emptyList());
   }
 
-  public void registerUser(com.nnk.springboot.domain.UserRegistrationRequest request) {
-    Logger.info("Registering new user with username: {}", request.getUsername());
-    if (userRepository.findByUsername(request.getUsername()).isPresent()) {
-      Logger.error("Registration failed: Username {} already exists", request.getUsername());
-      throw new UserRegistrationException("User with userName " + request.getUsername() + " already exists");
-    }
-
-    User newUser = new User();
-    newUser.setUsername(request.getUsername());
-    newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-    userRepository.save(newUser);
-    Logger.info("New user registered successfully with username: {}", request.getUsername());
-  }
-
 }

@@ -42,26 +42,23 @@ public class UserController {
 
     @PostMapping("/user/validate")
     public String validate(@ModelAttribute("user") @Valid User user, BindingResult result, Model model) {
-        Logger.info("Validating new user: {}", user);
-        if (!result.hasErrors()) {
-            // Check if the username already exists
-            if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-                Logger.error("User registration failed: username {} already exists", user.getUsername());
-                return "user/add";
-            }
-
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            user.setPassword(encoder.encode(user.getPassword()));
-            userRepository.save(user);
-            Logger.info("User saved successfully, redirecting to list.");
-
-            return "redirect:/user/list";
-        } else {
+        if (result.hasErrors()) {
             result.getAllErrors().forEach(error ->
-                Logger.warn("Validation error: {}", error.getDefaultMessage())
+                Logger.warn("Validation error inside: {}", error.getDefaultMessage())
             );
             return "user/add";
         }
+
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            model.addAttribute("user", user);
+            Logger.error("User registration failed: username {} already exists", user.getUsername());
+            return "user/add";
+        }
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return "redirect:/user/list";
     }
 
 

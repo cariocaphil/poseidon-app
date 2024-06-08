@@ -34,7 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/user/add")
-    public String addUser(User user, Model model) {
+    public String addUser(Model model) {
         Logger.info("Opening form to add a new user");
         model.addAttribute("user", new User());
         return "user/add";

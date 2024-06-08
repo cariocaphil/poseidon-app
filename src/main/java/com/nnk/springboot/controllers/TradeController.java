@@ -37,7 +37,7 @@ public class TradeController {
     }
 
     @PostMapping("/trade/validate")
-    public String validate(@Valid Trade trade, BindingResult result, Model model) {
+    public String validate(@ModelAttribute("trade") @Valid Trade trade, BindingResult result, Model model) {
         Logger.info("Validating new trade");
         if (result.hasErrors()) {
             Logger.warn("Validation errors while adding trade: {}", trade);

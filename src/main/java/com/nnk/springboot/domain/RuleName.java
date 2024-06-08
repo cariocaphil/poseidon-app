@@ -6,7 +6,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+
+
 
 @Entity
 @Table(name = "rulename")
@@ -15,21 +18,27 @@ public class RuleName {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Name is mandatory")
     @Size(max = 125)
     private String name;
 
+    @NotBlank(message = "Name is mandatory")
     @Size(max = 125)
     private String description;
 
+    @NotBlank
     @Size(max = 125)
     private String json;
 
+    @NotBlank
     @Size(max = 512)
     private String template;
 
+    @NotBlank
     @Size(max = 125)
     private String sqlStr;
 
+    @NotBlank
     @Size(max = 125)
     private String sqlPart;
 

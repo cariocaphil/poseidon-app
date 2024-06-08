@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 
@@ -18,23 +19,21 @@ public class Rating {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Moody's rating is required")
+    @NotBlank(message = "Moody's rating is required")
     @Column(name = "moodys_rating")
     private String moodysRating;
 
-    @NotNull(message = "S&P rating is required")
+    @NotBlank(message = "S&P rating is required")
     @Column(name = "sandp_rating")
     private String sandPRating;
 
-    @NotNull(message = "Fitch rating is required")
+    @NotBlank(message = "Fitch rating is required")
     @Column(name = "fitch_rating")
     private String fitchRating;
 
+    @NotNull(message = "order_number is required")
     @Column(name = "order_number")
     private Integer orderNumber;
-
-    public Rating(String moodys_rating, String sand_pRating, String fitch_rating, int i) {
-    }
 
     public Rating(String moodysRating, String sandPRating, String fitchRating, Integer orderNumber) {
         this.moodysRating = moodysRating;

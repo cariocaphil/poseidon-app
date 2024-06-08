@@ -37,12 +37,12 @@ public class TradeService {
     return savedTrade;
   }
 
-  public void delete(Trade trade) {
-    if (trade != null && trade.getTradeId() != null && tradeRepository.existsById(Math.toIntExact(trade.getTradeId()))) {
-      tradeRepository.delete(trade);
-      Logger.info("Deleted trade with ID: {}", trade.getTradeId());
+  public void delete(Long id) {
+    if (tradeRepository.existsById(Math.toIntExact(id))) {
+      tradeRepository.deleteById(Math.toIntExact(id));
+      Logger.info("Deleted trade with ID: {}", id);
     } else {
-      Logger.warn("Attempted to delete non-existing trade with ID: {}", trade != null ? trade.getTradeId() : "null");
+      Logger.warn("Attempted to delete non-existing trade with ID: {}", id);
     }
   }
 }

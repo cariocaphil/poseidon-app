@@ -1,7 +1,7 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import lombok.NoArgsConstructor;
 

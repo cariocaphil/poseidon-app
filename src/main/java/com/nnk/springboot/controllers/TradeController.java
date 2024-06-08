@@ -2,6 +2,7 @@ package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.services.TradeService;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,7 +38,7 @@ public class TradeController {
     }
 
     @PostMapping("/trade/validate")
-    public String validate(@Valid Trade trade, BindingResult result, Model model) {
+    public String validate(@ModelAttribute("trade") @Valid Trade trade, BindingResult result, Model model) {
         Logger.info("Validating new trade");
         if (result.hasErrors()) {
             Logger.warn("Validation errors while adding trade: {}", trade);
@@ -76,14 +77,17 @@ public class TradeController {
 
     @GetMapping("/trade/delete/{id}")
     public String deleteTrade(@PathVariable("id") Long id, Model model) {
-        Logger.info("Deleting trade ID: {}", id);
-        Trade trade = tradeService.findById(id)
-            .orElseThrow(() -> {
-                Logger.error("Trade not found for ID: {}", id);
-                return new IllegalArgumentException("Invalid trade Id:" + id);
-            });
-        tradeService.delete(trade);
-        Logger.info("Trade deleted successfully, ID: {}", id);
+        Logger.info("Attempting to delete trade with ID: {}", id);
+        Optional<Trade> existingTrade = tradeService.findById(id);
+        if (existingTrade.isPresent()) {
+            tradeService.delete(id);
+            model.addAttribute("successMessage", "Trade with ID " + id + " was successfully deleted.");
+            Logger.info("Deleted trade with ID: {}", id);
+        } else {
+            model.addAttribute("errorMessage", "Trade not found with ID " + id);
+            Logger.error("Failed to delete trade: No trade found with ID {}", id);
+        }
         return "redirect:/trade/list";
     }
+
 }

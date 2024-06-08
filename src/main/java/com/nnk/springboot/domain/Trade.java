@@ -1,8 +1,9 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import java.sql.Timestamp;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,16 +18,18 @@ public class Trade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
     @Column(name = "trade_id")
     private Integer tradeId;
 
+    @NotBlank(message = "account is mandatory")
     @Column(nullable = false, length = 30)
     private String account;
 
+    @NotBlank(message = "type is mandatory")
     @Column(nullable = false, length = 30)
     private String type;
-
+    @NotNull(message = "buyQuantity is mandatory")
+    @Column(name = "buyQuantity")
     private Double buyQuantity;
     private Double sellQuantity;
     private Double buyPrice;
@@ -61,6 +64,4 @@ public class Trade {
     public Trade(){
     }
 
-
-    // Getters and setters
 }

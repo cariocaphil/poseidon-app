@@ -1,6 +1,7 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import java.sql.Timestamp;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +30,7 @@ public class Trade {
     @Column(nullable = false, length = 30)
     private String type;
     @NotNull(message = "buyQuantity is mandatory")
+    @DecimalMin(value = "0.01", message = "Buy quantity must be greater than zero")
     @Column(name = "buyQuantity")
     private Double buyQuantity;
     private Double sellQuantity;

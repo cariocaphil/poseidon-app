@@ -1,5 +1,7 @@
 package com.nnk.springboot.domain;
 
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -25,6 +27,8 @@ public class Bid {
   private String type;
 
   @NotNull(message = "Bid quantity is mandatory")
+  @DecimalMin(value = "0.0", inclusive = false, message = "Bid quantity must be greater than 0")
+  @DecimalMax(value = "1000000.0", message = "Bid quantity must be less than 1000000")
   @Column(name = "bid_quantity")
   private Double bidQuantity;
 

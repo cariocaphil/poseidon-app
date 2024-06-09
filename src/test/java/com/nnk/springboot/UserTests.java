@@ -2,6 +2,7 @@ package com.nnk.springboot;
 
 import com.nnk.springboot.domain.User;
 import com.nnk.springboot.repositories.UserRepository;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +24,7 @@ public class UserTests {
   public void userTest() {
     User user = new User();
     user.setUsername("newUser");
-    user.setPassword("password"); // Normally, you'd encode this
+    user.setPassword("Password123@"); // Normally, you'd encode this
     user.setFullname("New User Fullname");
     user.setRole("ADMIN");
 
@@ -49,5 +49,16 @@ public class UserTests {
     userRepository.delete(user);
     Optional<User> deletedUser = userRepository.findById(id);
     Assert.assertFalse(deletedUser.isPresent());
+  }
+
+  @Test(expected = ConstraintViolationException.class)
+  public void shouldThrowConstraintViolationForInvalidPassword() {
+    User user = new User();
+    user.setUsername("testUser");
+    user.setPassword("weak");  // This should fail the validation
+    user.setFullname("Test User");
+    user.setRole("ADMIN");
+
+    userRepository.saveAndFlush(user);  // This should throw ConstraintViolationException
   }
 }

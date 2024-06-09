@@ -1,6 +1,7 @@
 package com.nnk.springboot.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import lombok.NoArgsConstructor;
@@ -23,9 +24,11 @@ public class CurvePoint {
 
   @NotNull
   @Column(name = "term")
+  @DecimalMin(value = "0.0", inclusive = false, message = "Term must be greater than 0")
   private Double term;
 
   @NotNull
+  @DecimalMin(value = "0.0", inclusive = false, message = "Value must be greater than 0")
   @Column(name = "value")
   private Double value;
 

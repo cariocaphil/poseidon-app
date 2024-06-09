@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,7 @@ public class Rating {
     private String fitchRating;
 
     @NotNull(message = "order_number is required")
+    @Min(value = 1, message = "Order number must be at least 1")
     @Column(name = "order_number")
     private Integer orderNumber;
 
